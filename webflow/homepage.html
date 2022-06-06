@@ -1,0 +1,88 @@
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" />
+
+<script>
+    //fancybox init
+    Fancybox.bind(".slide-expand-trigger", {
+        groupAll: false, // Group all items
+        on: {
+            ready: (fancybox) => {
+                console.log(`fancybox #${fancybox.id} is ready!`);
+            }
+        }
+    });
+
+    //autoplay background videos
+    const videos = document.querySelectorAll(".w-background-video video"); // Select ALL the Videos
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            // let videoid = this.id; // <-- this is wrong somehow
+            if (!entry.isIntersecting) {
+                entry.target.pause(); // Pause the TARGET video
+                // console.log('Video ' + videoid + ' paused');
+            } else {
+                entry.target.play(); // Play the TARGET video
+                // console.log('Video ' + videoid + ' playing');
+            }
+        });
+    }, {});
+    for (const video of videos) observer.observe(video); // Observe EACH video
+    const onVisibilityChange = () => {
+        if (document.hidden) {
+            for (const video of videos) video.pause(); // Pause EACH video
+        } else {
+            for (const video of videos) video.play(); // Play EACH video
+        }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+</script>
+
+<style type="text/css">
+    :root {
+        --color-orange: #f04e2f;
+    }
+
+    .slide-expand-false {
+        pointer-events: none;
+    }
+
+    @media screen and (min-width: 992px) {
+        .lg-section.section-hero {
+            min-height: calc(100vh - 89px);
+        }
+    }
+
+    .w-slider-nav .w-slider-dot {
+        margin: 0;
+        height: 0.2rem;
+        position: relative;
+        flex-basis: 4rem;
+        background-color: #dbdbdb;
+    }
+
+    .w-slider-nav .w-slider-dot:after {
+        position: absolute;
+        height: 300%;
+        width: 100%;
+        content: "";
+        left: 0;
+        top: -100%;
+    }
+
+    .w-slider-nav .w-slider-dot.w-active {
+        background-color: var(--color-orange);
+    }
+
+    .w-slider-nav.project-slider-nav {
+        margin: 0 -3px;
+    }
+
+    .w-slider-nav.events-slider-nav {
+        margin: 0 auto;
+    }
+
+    .w-slider-nav.events-slider-nav .w-slider-dot {
+        transform: translate(-3px, 0);
+    }
+</style>

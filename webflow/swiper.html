@@ -1,0 +1,72 @@
+<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" />
+
+<script type="text/javascript">
+
+    //fancybox init
+    Fancybox.bind(".slide-expand-trigger", {
+        groupAll: false, // Group all items
+        on: {
+            ready: (fancybox) => {
+                console.log(`fancybox #${fancybox.id} is ready!`);
+            }
+        }
+    });
+
+    //swiper init
+    if ($('.project-swiper').length > 0) {
+
+        function getVideoId(url) {
+            let regex = /(youtu.*be.*)\/(watch\?v=|embed\/|v|shorts|)(.*?((?=[&#?])|$))/gm;
+            return regex.exec(url)[3];
+        }
+
+        $('.project-swiper').each(function () {
+            var $this = $(this),
+                $layout = $this.find('div[data-layout]'),
+                $youtube = $this.find('div[data-youtube]')
+                ;
+
+
+            if ($layout.attr('data-layout') == 'Half Width') {
+                $this.addClass('half-width');
+            }
+
+            if ($('.swiper-slide').length) {
+                new Swiper(this.querySelector('.swiper'), {
+                    loop: true,
+                    watchOverflow: true,
+                    on: {
+                        afterInit: function () {
+                            console.log('swiper initialized');
+                            if ($youtube.attr('data-youtube')) {
+                                var $youtubeURL = $youtube.attr('data-youtube'),
+                                    $youtubeID = getVideoId($youtubeURL),
+                                    $youtubeEmbed = 'https://www.youtube.com/embed/' + $youtubeID + '?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&playlist=' + $youtubeID + '&enablejsapi=1'
+                                    ;
+                                this.prependSlide('<div class="swiper-slide"><iframe class="ytiframe" width="100%" src="' + $youtubeEmbed + '"></div>');
+                            }
+                        },
+                    },
+                });
+            }
+        });
+    }
+
+</script>
+
+<style type="text/css">
+    .slide-expand-false {
+        pointer-events: none;
+    }
+
+    .ytiframe {
+        width: 100%;
+        height: 300%;
+        border: none;
+        pointer-events: none;
+        aspect-ratio: 16 / 9;
+    }
+</style>
